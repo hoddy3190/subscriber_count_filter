@@ -1,5 +1,4 @@
 from apiclient.discovery import build
-from apiclient.errors import HttpError
 from oauth2client.tools import argparser
 import os
 from os.path import join, dirname
@@ -37,12 +36,6 @@ def youtube_search(nextPageToken, options):
         pageToken=nextPageToken
     ).execute()
 
-    # videos = []
-    # channels = []
-    # playlists = []
-
-    # Add each result to the appropriate list, and then display the lists of
-    # matching videos, channels, and playlists.
     for search_result in search_response.get("items", []):
         if search_result["id"]["kind"] == "youtube#channel":
             channel_ids.append(search_result["id"]["channelId"])
@@ -51,19 +44,6 @@ def youtube_search(nextPageToken, options):
         return search_response.get('nextPageToken')
     else:
         return ''
-        # if search_result["id"]["kind"] == "youtube#video":
-        #     videos.append("%s (%s)" % (
-        #         search_result["snippet"]["title"], search_result["id"]["videoId"]))
-        # elif search_result["id"]["kind"] == "youtube#channel":
-        #     channels.append("%s (%s)" % (
-        #         search_result["snippet"]["title"], search_result["id"]["channelId"]))
-        # elif search_result["id"]["kind"] == "youtube#playlist":
-        #     playlists.append("%s (%s)" % (
-        #         search_result["snippet"]["title"], search_result["id"]["playlistId"]))
-
-    # print("Videos:\n", "\n".join(videos), "\n")
-    # print("Channels:\n", "\n".join(channels), "\n")
-    # print("Playlists:\n", "\n".join(playlists), "\n")
 
 
 if __name__ == "__main__":
@@ -78,5 +58,3 @@ if __name__ == "__main__":
         nextPageToken = youtube_search(nextPageToken, args)
 
     print(','.join(channel_ids))
-    # except HttpError, e:
-    #     print("An HTTP error %d occurred:\n%s" % (e.resp.status, e.content))
