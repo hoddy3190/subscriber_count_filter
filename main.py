@@ -35,6 +35,10 @@ def youtube_search(nextPageToken, options):
         pageToken=nextPageToken
     ).execute()
 
+    if nextPageToken == '':
+        print('totalResults:' +
+              str(search_response["pageInfo"]["totalResults"]))
+
     for search_result in search_response.get("items", []):
         if search_result["id"]["kind"] == "youtube#channel":
             channel_ids.append(search_result["id"]["channelId"])
