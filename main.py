@@ -3,7 +3,6 @@ from oauth2client.tools import argparser
 import os
 from os.path import join, dirname
 from dotenv import load_dotenv
-
 load_dotenv(verbose=True)
 
 dotenv_path = join(dirname(__file__), '.env')
@@ -46,6 +45,21 @@ def youtube_search(nextPageToken, options):
         return ''
 
 
+def channel_list(id_str):
+    youtube = build(YOUTUBE_API_SERVICE_NAME,
+                    YOUTUBE_API_VERSION, developerKey=DEVELOPER_KEY)
+    results = youtube.channels().list(
+        part='statistics',
+        id=id_str
+    ).execute()
+
+    for res in results.get("items", []):
+        if int(res["statistics"]["subscriberCount"]) >= 1000:
+            print("https://www.youtube.com/channel/" +
+                  res["id"] + " count: " +
+                  res["statistics"]["subscriberCount"])
+
+
 if __name__ == "__main__":
     argparser.add_argument("--q", help="Search term", default="Google")
     argparser.add_argument("--max-results", help="Max results", default=50)
@@ -57,4 +71,10 @@ if __name__ == "__main__":
         print("nextPageToken: " + nextPageToken)
         nextPageToken = youtube_search(nextPageToken, args)
 
-    print(','.join(channel_ids))
+    tmp = []
+    for channel_id in channel_ids:
+        tmp.append(channel_id)
+        # リクエストにわたすチャンネルの数が多すぎるとエラーになるので1リクエスト最大10チャンネルIDにしておく
+        if len(tmp) >= 10:
+            channel_list(','.join(tmp))
+            tmp = []
