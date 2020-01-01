@@ -8,3 +8,8 @@
 + location
   - 37.42307,-122.08427と指定し、locationRadiusとセットで使うと地域が絞られるが、typeがvideoのときのみ有効（typeをvideoにしないとエラーになる）
   - 現状、「地域」を絞るサーチクエリはない
+
+## 追記
+
+このサイトで事足りた
+https://www.channelcrawler.com/
