@@ -3,6 +3,7 @@ from oauth2client.tools import argparser
 import os
 from os.path import join, dirname
 from dotenv import load_dotenv
+
 load_dotenv(verbose=True)
 
 dotenv_path = join(dirname(__file__), '.env')
@@ -53,15 +54,19 @@ def channel_list(id_str):
     youtube = build(YOUTUBE_API_SERVICE_NAME,
                     YOUTUBE_API_VERSION, developerKey=DEVELOPER_KEY)
     results = youtube.channels().list(
-        part='statistics',
+        part='statistics,snippet,brandingSettings',
         id=id_str
     ).execute()
 
     for res in results.get("items", []):
+        # res["snippet"]["country"] == 'JP'
         if int(res["statistics"]["subscriberCount"]) >= 1000:
-            print("https://www.youtube.com/channel/" +
-                  res["id"] + " count: " +
-                  res["statistics"]["subscriberCount"])
+            print("===============================================")
+            print("https://www.youtube.com/channel/" + res["id"])
+            print("subscriberCount: " + res["statistics"]["subscriberCount"])
+            print("title: " + res["snippet"]["localized"]["title"])
+            print("videoCount: " + res["statistics"]["videoCount"])
+            print("publishedAt: " + res["snippet"]["publishedAt"])
 
 
 if __name__ == "__main__":
